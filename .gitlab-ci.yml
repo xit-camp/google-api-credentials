@@ -1,0 +1,31 @@
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .m2/repository/
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+stages:
+  - build
+  - publish
+
+build:
+  stage: build
+  tags:
+    - maven3-jdk11
+  script:
+    - mvn -U -B clean install -DskipITs
+
+include:
+  - project: 'xit/common/ci-scripts'
+    ref: master
+    file: '/maven/release-jdk11.yml'
+
+publish:
+  stage: publish
+  tags:
+    - maven3-jdk11
+  script:
+    - mvn -B deploy -Dmaven.javadoc.failOnError=false -DskipITs -Dmaven.test.skip
+
