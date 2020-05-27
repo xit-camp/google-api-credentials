@@ -1,9 +1,9 @@
-package camp.xit.google.api.serviceaccount;
+package camp.xit.google.api.credentials;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,14 +65,14 @@ public final class GoogleCredentials {
         LOG.info("Refreshing access token");
 
         Instant now = Instant.now();
-        String encodedToken = Jwts.builder()
-                .setIssuer(serviceAccount.getClientEmail())
-                .setAudience(serviceAccount.getTokenUri())
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plusSeconds(TOKEN_EXPIRATION)))
-                .signWith(serviceAccount.getPrivateKey(), SignatureAlgorithm.RS256)
-                .claim("scope", scopes)
-                .compact();
+        Algorithm algorithm = Algorithm.RSA256(null, serviceAccount.getPrivateKey());
+        String encodedToken = JWT.create()
+                .withIssuer(serviceAccount.getClientEmail())
+                .withAudience(serviceAccount.getTokenUri())
+                .withIssuedAt(Date.from(now))
+                .withExpiresAt(Date.from(now.plusSeconds(TOKEN_EXPIRATION)))
+                .withClaim("scope", scopes)
+                .sign(algorithm);
 
         String type = URLEncoder.encode(OAuthConstants.JWT_BEARER_GRANT, Charset.defaultCharset());
         String assertion = URLEncoder.encode(encodedToken, Charset.defaultCharset());
@@ -87,7 +87,7 @@ public final class GoogleCredentials {
 
         try {
             HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
-            try (InputStream in = response.body()) {
+            try ( InputStream in = response.body()) {
                 return jsonMapper.readValue(in, ClientAccessToken.class);
             }
         } catch (IOException | InterruptedException e) {
