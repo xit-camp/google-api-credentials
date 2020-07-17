@@ -4,19 +4,24 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +36,10 @@ public final class GoogleCredentials {
     private final ServiceAccount serviceAccount;
     private final String scopes;
 
+    public GoogleCredentials(Path serviceAccountFile, String... scopes) {
+        this(serviceAccountFile.toFile(), scopes);
+    }
+
     public GoogleCredentials(String serviceAccountFile, String... scopes) {
         this(new File(serviceAccountFile), scopes);
     }
@@ -40,7 +49,7 @@ public final class GoogleCredentials {
         this.httpClient = HttpClient.newHttpClient();
         this.serviceAccount = readServiceAccount(serviceAccountFile);
         this.tokenCache = new ExpirationSupplier<>(this::readToken, TOKEN_EXPIRATION - 3, TimeUnit.SECONDS);
-        this.scopes = String.join("", Arrays.asList(scopes));
+        this.scopes = String.join(" ", Arrays.asList(scopes));
     }
 
     public ClientAccessToken getAccessToken() {
@@ -87,11 +96,25 @@ public final class GoogleCredentials {
 
         try {
             HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
-            try ( InputStream in = response.body()) {
-                return jsonMapper.readValue(in, ClientAccessToken.class);
+            if (response.statusCode() == 200 || response.statusCode() == 201) {
+                try (InputStream in = response.body()) {
+                    return jsonMapper.readValue(in, ClientAccessToken.class);
+                }
+            } else {
+                String content = consumeContent(response.body());
+                throw new RuntimeException(content);
             }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Cannot read access token", e);
+        }
+    }
+
+    private String consumeContent(InputStream inputStream) throws IOException {
+        try (inputStream) {
+            return new BufferedReader(
+                    new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+                    .lines()
+                    .collect(Collectors.joining("\n"));
         }
     }
 }
