@@ -15,7 +15,7 @@
 
     <scm>
         <connection>scm:git:ssh://git@code.xit.camp:xit/common/google-api-service-account.git</connection>
-        <tag>HEAD</tag>
+        <tag>r1.2</tag>
     </scm>
 
     <distributionManagement>
