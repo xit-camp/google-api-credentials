@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>camp.xit.google</groupId>
     <artifactId>google-api-credentials</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.2.2</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -15,7 +15,7 @@
 
     <scm>
         <connection>scm:git:https://github.com/hlavki/google-api-credentials.git</connection>
-        <tag>HEAD</tag>
+        <tag>google-api-credentials-1.2.2</tag>
     </scm>
 
     <distributionManagement>
