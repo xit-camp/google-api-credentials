@@ -14,7 +14,7 @@
     </properties>
 
     <scm>
-        <connection>scm:git:ssh://git@github.com:hlavki/google-api-credentials.git</connection>
+        <connection>scm:git:https://github.com/hlavki/google-api-credentials.git</connection>
         <tag>HEAD</tag>
     </scm>
 
