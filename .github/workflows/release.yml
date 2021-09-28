@@ -23,7 +23,7 @@ jobs:
     - name: Prepare release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: mvn --batch-mode -s .ci.settings.xml release:prepare
+      run: mvn --batch-mode -s .github/settings.xml release:prepare
     - name: Perform release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
