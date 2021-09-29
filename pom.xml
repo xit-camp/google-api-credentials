@@ -14,7 +14,7 @@
     </properties>
 
     <scm>
-        <connection>scm:git:https://github.com/hlavki/google-api-credentials.git</connection>
+        <connection>scm:git:https://github.com/xit-camp/google-api-credentials.git</connection>
         <tag>HEAD</tag>
     </scm>
 
@@ -22,7 +22,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Maven Packages</name>
-            <url>https://maven.pkg.github.com/hlavki/google-api-credentials</url>
+            <url>https://maven.pkg.github.com/xit-camp/google-api-credentials</url>
         </repository>
     </distributionManagement>
 
@@ -53,4 +53,17 @@
             <version>${jwt.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
