@@ -13,7 +13,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
-        gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+        gpg-private-key: ${{ secrets.MAVEN_GPG_KEY }}
         gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
     - name: Cache maven packages
