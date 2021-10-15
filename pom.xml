@@ -4,6 +4,21 @@
     <groupId>camp.xit.google</groupId>
     <artifactId>google-api-credentials</artifactId>
     <version>1.2.4-SNAPSHOT</version>
+    <url>https://github.com/xit-camp/google-api-credentials</url>
+
+    <scm>
+        <connection>scm:git:https://github.com/xit-camp/google-api-credentials.git</connection>
+        <url>https://github.com/xit-camp/google-api-credentials</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -13,17 +28,15 @@
         <jackson.version>2.12.5</jackson.version>
     </properties>
 
-    <scm>
-        <connection>scm:git:https://github.com/xit-camp/google-api-credentials.git</connection>
-        <tag>HEAD</tag>
-    </scm>
-
     <distributionManagement>
         <repository>
-            <id>github</id>
-            <name>GitHub Maven Packages</name>
-            <url>https://maven.pkg.github.com/xit-camp/google-api-credentials</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
+        <snapshotRepository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/xit-camp/google-api-credentials</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <dependencies>
@@ -91,6 +104,43 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
             </plugin>
         </plugins>
     </build>
