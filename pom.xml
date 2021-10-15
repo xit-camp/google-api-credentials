@@ -4,6 +4,9 @@
     <groupId>camp.xit.google</groupId>
     <artifactId>google-api-credentials</artifactId>
     <version>1.2.6-SNAPSHOT</version>
+
+    <name>Google API Credentials</name>
+    <description>Simple API to call google API using service account without official Google API</description>
     <url>https://github.com/xit-camp/google-api-credentials</url>
 
     <scm>
