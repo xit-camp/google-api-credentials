@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>camp.xit.google</groupId>
     <artifactId>google-api-credentials</artifactId>
-    <version>1.2.5-SNAPSHOT</version>
+    <version>1.2.5</version>
     <url>https://github.com/xit-camp/google-api-credentials</url>
 
     <scm>
         <connection>scm:git:https://github.com/xit-camp/google-api-credentials.git</connection>
         <url>https://github.com/xit-camp/google-api-credentials</url>
-        <tag>HEAD</tag>
+        <tag>v1.2.5</tag>
     </scm>
 
     <licenses>
