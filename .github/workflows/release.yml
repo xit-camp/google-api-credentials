@@ -31,5 +31,5 @@ jobs:
         MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
       run: |
         mvn --batch-mode -s .github/settings.xml release:prepare -DpushChanges=false
-        git push --follow-tags
         mvn --batch-mode -s .github/settings.xml release:perform -DlocalCheckout=true
+        git push --follow-tags
