@@ -13,6 +13,8 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+        gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
     - name: Cache maven packages
       uses: actions/cache@v2
@@ -24,9 +26,15 @@ jobs:
     - name: Build Maven
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        OSSRH_USER: ${{ secrets.OSSRH_USER }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
       run: mvn --batch-mode -s .github/settings.xml --update-snapshots install
 
     - name: Deploy Maven
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        OSSRH_USER: ${{ secrets.OSSRH_USER }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
       run: mvn --batch-mode -s .github/settings.xml deploy -Dmaven.javadoc.failOnError=false -DskipITs -Dmaven.test.skip
