@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>camp.xit.google</groupId>
     <artifactId>google-api-credentials</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.0</version>
 
     <name>Google API Credentials</name>
     <description>Simple API to call google API using service account without official Google API</description>
@@ -12,7 +12,7 @@
     <scm>
         <connection>scm:git:https://github.com/xit-camp/google-api-credentials.git</connection>
         <url>https://github.com/xit-camp/google-api-credentials</url>
-        <tag>HEAD</tag>
+        <tag>v1.3.0</tag>
     </scm>
 
     <licenses>
