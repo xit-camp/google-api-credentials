@@ -29,6 +29,7 @@ public final class GoogleCredentials {
 
     private static final Logger LOG = LoggerFactory.getLogger(GoogleCredentials.class);
     private static final int TOKEN_EXPIRATION = 3600;
+    private static final JsonMapper JSON_MAPPER = getJsonMapper();
 
     private final ExpirationSupplier<ClientAccessToken> tokenCache;
     private final JsonMapper jsonMapper;
@@ -40,14 +41,18 @@ public final class GoogleCredentials {
         this(serviceAccountFile.toFile(), scopes);
     }
 
-    public GoogleCredentials(String serviceAccountFile, String... scopes) {
-        this(new File(serviceAccountFile), scopes);
+    public GoogleCredentials(File serviceAccountFile, String... scopes) {
+        this(readServiceAccount(serviceAccountFile), scopes);
     }
 
-    public GoogleCredentials(File serviceAccountFile, String... scopes) {
+    public GoogleCredentials(InputStream serviceAccount, String... scopes) {
+        this(readServiceAccount(serviceAccount), scopes);
+    }
+
+    public GoogleCredentials(ServiceAccount serviceAccount, String... scopes) {
         this.jsonMapper = getJsonMapper();
         this.httpClient = HttpClient.newHttpClient();
-        this.serviceAccount = readServiceAccount(serviceAccountFile);
+        this.serviceAccount = serviceAccount;
         this.tokenCache = new ExpirationSupplier<>(this::readToken, TOKEN_EXPIRATION - 3, TimeUnit.SECONDS);
         this.scopes = String.join(" ", Arrays.asList(scopes));
     }
@@ -56,15 +61,23 @@ public final class GoogleCredentials {
         return tokenCache.get();
     }
 
-    private JsonMapper getJsonMapper() {
+    private static JsonMapper getJsonMapper() {
         JsonMapper mapper = new JsonMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES);
         return mapper;
     }
 
-    private ServiceAccount readServiceAccount(File serviceAccountFile) {
+    private static ServiceAccount readServiceAccount(File serviceAccountFile) {
         try {
-            return jsonMapper.readValue(serviceAccountFile, ServiceAccount.class);
+            return JSON_MAPPER.readValue(serviceAccountFile, ServiceAccount.class);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Cannot read service account file", e);
+        }
+    }
+
+    private static ServiceAccount readServiceAccount(InputStream serviceAcount) {
+        try {
+            return JSON_MAPPER.readValue(serviceAcount, ServiceAccount.class);
         } catch (IOException e) {
             throw new IllegalArgumentException("Cannot read service account file", e);
         }
